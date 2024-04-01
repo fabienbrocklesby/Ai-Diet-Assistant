@@ -1,12 +1,19 @@
-const express = require("express");
-const path = require("path");
+import express from "express";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
+import routes from "./routes.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const app = express();
 
-app.use(express.static(path.join(__dirname, "views")));
+app.use(express.static(join(__dirname, "public")));
+
+app.use(routes);
 
 app.get("*", (req, res) => {
-	res.sendFile(path.join(__dirname, "public", "index.html"));
+	res.sendFile(join(__dirname, "public", "index.html"));
 });
 
 const PORT = process.env.PORT || 3000;
