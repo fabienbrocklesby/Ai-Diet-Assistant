@@ -4,8 +4,6 @@ import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import routes from "./routes.js";
 
-import { connect } from "./utils/db.js";
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -13,7 +11,6 @@ const app = express();
 
 dotenv.config();
 
-connect();
 app.use(express.static(join(__dirname, "public")));
 
 app.use(routes);
