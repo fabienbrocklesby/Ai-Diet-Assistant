@@ -1,9 +1,16 @@
 import db from "../utils/db.js";
 
-export const register = async () => {
-	return "Register";
-};
+export default {
+	async register({ username, email, password }) {
+		const result = await db.query(
+			"INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING *",
+			[username, email, password]
+		);
 
-export const login = async () => {
-	return "Login";
+		return result.rows[0];
+	},
+
+	async login() {
+		return "Login";
+	},
 };

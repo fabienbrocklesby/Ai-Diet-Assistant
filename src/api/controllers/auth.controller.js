@@ -1,8 +1,9 @@
-import Service from "../Services/auth.Service.js";
+import Service from "../services/auth.service.js";
 
 class AuthController {
 	async register(request, response) {
-		const result = await Service.register();
+		console.log(request.body);
+		const result = await Service.register(request.body);
 		response.send(result);
 	}
 

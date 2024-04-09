@@ -1,11 +1,14 @@
 import Model from "../models/auth.model.js";
 
-export const register = async () => {
-	const result = await Model.register();
-	return result;
-};
+export default {
+	async register(userData) {
+		console.log(userData);
+		const result = await Model.register(userData);
+		return result;
+	},
 
-export const login = async () => {
-	const result = await Model.login();
-	return result;
+	async login() {
+		const result = await Model.login();
+		return result;
+	},
 };

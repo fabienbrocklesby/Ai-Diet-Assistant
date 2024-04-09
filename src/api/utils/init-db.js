@@ -1,6 +1,8 @@
 async function initDb(client) {
 	try {
-		await client.query(`  
+		await client.query(`
+      CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
       CREATE TYPE sex AS ENUM ('Male', 'Female');
 
       CREATE TYPE activity_level AS ENUM ('Sedentary', 'Lightly Active', 'Moderately Active', 'Very Active', 'Extremely Active');
@@ -10,12 +12,12 @@ async function initDb(client) {
       CREATE TYPE unit AS ENUM ('g', 'ml', 'cup', 'tsp', 'tbsp', 'oz', 'lb');
       
       CREATE TABLE Users (
-        user_id SERIAL PRIMARY KEY,
-        username VARCHAR(255) UNIQUE,
+        user_id UUID PRIMARY KEY DEFAULT uuid_generate_v4() NOT NULL,
+        username VARCHAR(255) UNIQUE NOT NULL,
         password_hash VARCHAR(255) NOT NULL,
         email VARCHAR(255) UNIQUE,
-        first_name VARCHAR(255),
-        last_name VARCHAR(255),
+        first_name VARCHAR(255) NOT NULL,
+        last_name VARCHAR(255) NOT NULL,
         date_of_birth DATE,
         height INTEGER,
         weight INTEGER,
