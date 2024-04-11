@@ -7,6 +7,7 @@ import {
 } from "../validators/user.validation.js";
 import tokenMiddleware from "../middleware/jwt.middleware.js";
 import emailHelper from "../helpers/email.helper.js";
+import { generateOTP, verifyOTP } from "../helpers/otp.helper.js";
 
 const saltRounds = 10;
 
@@ -35,6 +36,8 @@ export default {
 			email: email,
 			message: `Thank you for registering, ${username}!`,
 		});
+
+		const otp = generateOTP();
 
 		const result = await Model.register({ username, email, password });
 		return result;
