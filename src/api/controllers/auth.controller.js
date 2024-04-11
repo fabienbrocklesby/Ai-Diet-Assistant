@@ -1,16 +1,21 @@
 import Service from "../services/auth.service.js";
 
-class AuthController {
-	async register(request, response) {
-		console.log(request.body);
-		const result = await Service.register(request.body);
-		response.send(result);
-	}
+export default {
+	async register(request, response, next) {
+		try {
+			console.log(request.body);
+			response.status(201).send(await Service.register(request.body));
+		} catch (error) {
+			next(error);
+		}
+	},
 
-	async login(request, response) {
-		const result = await Service.login();
-		response.send(result);
-	}
-}
-
-export default new AuthController();
+	async login(request, response, next) {
+		try {
+			console.log(request.body);
+			response.status(200).send(await Service.login(request.body));
+		} catch (error) {
+			next(error);
+		}
+	},
+};

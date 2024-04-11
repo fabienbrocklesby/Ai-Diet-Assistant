@@ -10,12 +10,19 @@ async function initDb(client) {
       CREATE TYPE category AS ENUM( 'Fruits', 'Vegetables', 'Grains', 'Protein', 'Dairy', 'Fats', 'Sweets', 'Drinks');
 
       CREATE TYPE unit AS ENUM ('g', 'ml', 'cup', 'tsp', 'tbsp', 'oz', 'lb');
-      
+
       CREATE TABLE Users (
         user_id UUID PRIMARY KEY DEFAULT uuid_generate_v4() NOT NULL,
         username VARCHAR(255) UNIQUE NOT NULL,
         password_hash VARCHAR(255) NOT NULL,
-        email VARCHAR(255) UNIQUE,
+        email VARCHAR(255) UNIQUE NOT NULL,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+
+      CREATE TABLE Profiles (
+        profile_id SERIAL PRIMARY KEY,
+        user_id UUID REFERENCES Users(user_id) NOT NULL,
         first_name VARCHAR(255) NOT NULL,
         last_name VARCHAR(255) NOT NULL,
         date_of_birth DATE,
@@ -24,7 +31,7 @@ async function initDb(client) {
         sex sex,
         activity_level activity_level,
         dietary_restrictions TEXT,
-        goals TEXT,
+        goals JSON,
         preferences JSONB,
         bmr INTEGER,
         bmi FLOAT,
