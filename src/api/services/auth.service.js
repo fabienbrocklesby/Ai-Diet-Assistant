@@ -5,54 +5,47 @@ import {
 	validateEmail,
 	validatePassword,
 } from "../validators/user.validation.js";
+import tokenMiddleware from "../middleware/jwt.middleware.js";
 
 const saltRounds = 10;
 
 export default {
-	async register(userData) {
-		if (!userData.username || !userData.email || !userData.password) {
+	async register({ username, email, password }) {
+		if (!username || !email || !password) {
 			throw new Error(
 				"Registration failed. Please ensure you have provided a username, email, and a password."
 			);
 		}
 
 		try {
-			await validateUsername({ username: userData.username });
-			await validateEmail({ email: userData.email });
-			await validatePassword({ password: userData.password });
+			await validateUsername({ username: username });
+			await validateEmail({ email: email });
+			await validatePassword({ password: password });
 		} catch (error) {
 			throw error;
 		}
 
-		const hashedPassword = await bcrypt.hash(userData.password, saltRounds);
+		const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-		userData.password = hashedPassword;
+		password = hashedPassword;
 
-		const result = await Model.register(userData);
+		const result = await Model.register({ username, email, password });
 		return result;
 	},
 
-	async login(userData) {
-		if (!userData.username && !userData.email) {
+	async login({ email, username, password }) {
+		if ((!username && !email) || !password) {
 			throw new Error(
-				"Login failed. Please provide either a username or email."
+				"Login failed. Please provide a username/email and a password."
 			);
 		}
-		if (!userData.password) {
-			throw new Error("Login failed. Please provide a password.");
-		}
 
-		try {
-			const { email, username } = userData;
-			if (email) {
-				await validateEmail({ email });
-			} else {
-				await validateUsername({ username });
-			}
-			await validatePassword({ password: userData.password });
-		} catch (error) {
-			throw error;
+		if (email) {
+			await validateEmail({ email });
+		} else {
+			await validateUsername({ username });
 		}
+		await validatePassword({ password: password });
 
 		const user = email
 			? await Model.selectUserByEmail(email)
@@ -64,10 +57,7 @@ export default {
 			);
 		}
 
-		const passwordMatch = await bcrypt.compare(
-			userData.password,
-			user.password_hash
-		);
+		const passwordMatch = await bcrypt.compare(password, user.password_hash);
 
 		if (!passwordMatch) {
 			throw new Error(
@@ -75,8 +65,13 @@ export default {
 			);
 		}
 
-		console.log("User logged in:", userData.username || userData.email);
+		console.log("User logged in:", username || email);
 
-		return { message: "Logged in successfully!", user };
+		const accessToken = tokenMiddleware.generateAccessToken({
+			email: user.email,
+			username: user.username,
+		});
+
+		return { message: "Logged in successfully!", user, accessToken };
 	},
 };
