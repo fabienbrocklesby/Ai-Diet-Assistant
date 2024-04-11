@@ -6,11 +6,13 @@ import {
 	validatePassword,
 } from "../validators/user.validation.js";
 import tokenMiddleware from "../middleware/jwt.middleware.js";
+import emailHelper from "../helpers/email.helper.js";
 
 const saltRounds = 10;
 
 export default {
 	async register({ username, email, password }) {
+		console.log(username);
 		if (!username || !email || !password) {
 			throw new Error(
 				"Registration failed. Please ensure you have provided a username, email, and a password."
@@ -28,6 +30,11 @@ export default {
 		const hashedPassword = await bcrypt.hash(password, saltRounds);
 
 		password = hashedPassword;
+
+		await emailHelper({
+			email: email,
+			message: `Thank you for registering, ${username}!`,
+		});
 
 		const result = await Model.register({ username, email, password });
 		return result;
