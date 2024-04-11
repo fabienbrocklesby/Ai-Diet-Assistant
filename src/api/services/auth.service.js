@@ -32,13 +32,13 @@ export default {
 
 		password = hashedPassword;
 
-		await emailHelper({
-			email: email,
-			message: `Thank you for registering, ${username}!`,
-		});
-
 		const otp = generateOTP();
 		console.log(otp);
+
+		await emailHelper({
+			email: email,
+			message: `Thank you for registering, ${username}! <br /> Please verify your email by entering the following OTP: <strong>${otp}</strong>. <br />This OTP will expire in 1 hour.`,
+		});
 
 		const result = await Model.register({
 			username,

@@ -19,6 +19,7 @@ async function initDb(client) {
         otp VARCHAR(6),
         otp_expires TIMESTAMP WITH TIME ZONE,
         email_verified BOOLEAN DEFAULT FALSE,
+        unverified_login_count INTEGER DEFAULT 0,
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       );

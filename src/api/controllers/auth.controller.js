@@ -36,4 +36,19 @@ export default {
 			next(error);
 		}
 	},
+
+	async logout(request, response, next) {
+		try {
+			response
+				.status(200)
+				.clearCookie("access_token", {
+					httpOnly: true,
+					sameSite: "strict",
+					secure: process.env.NODE_ENV === "production",
+				})
+				.send("Logged out");
+		} catch (error) {
+			next(error);
+		}
+	},
 };
