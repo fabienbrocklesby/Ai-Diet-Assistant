@@ -3,7 +3,7 @@ import { totp } from "otplib";
 export const generateOTP = () => {
 	const otp = totp.generate(process.env.OTP_SECRET);
 
-	return { otp };
+	return otp;
 };
 
 export const verifyOTP = (otp) => {

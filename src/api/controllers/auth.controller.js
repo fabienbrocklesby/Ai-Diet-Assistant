@@ -27,4 +27,13 @@ export default {
 			next(error);
 		}
 	},
+
+	async verifyEmail(request, response, next) {
+		try {
+			console.log(request.body);
+			response.status(200).send(await Service.verifyEmail(request.body));
+		} catch (error) {
+			next(error);
+		}
+	},
 };

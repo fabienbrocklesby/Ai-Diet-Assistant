@@ -18,18 +18,25 @@ export default {
 		return user;
 	},
 
-	async register({ username, email, password }) {
+	async register({ username, email, password, otp, otp_expires }) {
 		const {
 			rows: [user],
 		} = await db.query(
-			"INSERT INTO users (username, email, password_hash) VALUES ($1, $2, $3) RETURNING *",
-			[username, email, password]
+			"INSERT INTO users (username, email, password_hash, otp, otp_expires) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+			[username, email, password, otp, otp_expires]
 		);
 
 		return user;
 	},
 
-	async login(data) {
-		return { Login: data };
+	async verifyEmail(email) {
+		const {
+			rows: [user],
+		} = await db.query(
+			"UPDATE users SET email_verified = true, otp = NULL, otp_expires = NULL WHERE email = $1 RETURNING *",
+			[email]
+		);
+
+		return user;
 	},
 };

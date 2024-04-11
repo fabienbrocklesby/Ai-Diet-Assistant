@@ -38,8 +38,16 @@ export default {
 		});
 
 		const otp = generateOTP();
+		console.log(otp);
 
-		const result = await Model.register({ username, email, password });
+		const result = await Model.register({
+			username,
+			email,
+			password,
+			otp,
+			otp_expires: new Date(Date.now() + 1000 * 60 * 60),
+		});
+
 		return result;
 	},
 
@@ -83,5 +91,37 @@ export default {
 		});
 
 		return { message: "Logged in successfully!", user, accessToken };
+	},
+
+	async verifyEmail({ email, otp }) {
+		if (!email || !otp) {
+			throw new Error(
+				"Verification failed. Please provide an email and an OTP."
+			);
+		}
+
+		await validateEmail({ email });
+
+		const user = await Model.selectUserByEmail(email);
+
+		if (!user) {
+			throw new Error("User not found. Please check your email and try again.");
+		}
+
+		if (user.email_verified) {
+			throw new Error("Email already verified.");
+		}
+
+		const isOTPValid = verifyOTP(otp);
+
+		if ((!isOTPValid, user.otp !== otp)) {
+			throw new Error("Invalid OTP. Please check your OTP and try again.");
+		} else if (user.otp_expires < new Date()) {
+			throw new Error("OTP has expired. Please request a new OTP.");
+		}
+
+		const result = await Model.verifyEmail(email);
+
+		return { message: "Email verified successfully!", result };
 	},
 };
