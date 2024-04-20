@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start:dev": "nodemon ./src/api/index.js --watch ./src"
+    "start:dev": "nodemon ./index.js --watch ./"
   },
   "keywords": [],
   "author": "",

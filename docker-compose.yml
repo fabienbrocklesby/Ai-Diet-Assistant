@@ -1,16 +1,29 @@
 version: '3.8'
 
 services:
-  app:
-    container_name: app
-    build: .
+  api:
+    container_name: api
+    build: ./src/api/
     volumes:
-      - .:/app 
+      - ./src/api/:/app 
     ports:
       - "3000:3000" 
     env_file: 
       - .env
+    depends_on:
+      - postgres
     command: npm run start:dev
+
+  frontend:
+    container_name: frontend
+    build: ./src/frontend/
+    volumes:
+      - ./src/frontend/:/app
+    ports:
+      - "3001:3001"
+    env_file:
+      - .env
+    command: npm run start
 
   postgres:
     container_name: postgres
