@@ -12,13 +12,12 @@ const app = express();
 
 dotenv.config();
 
-const corsOptions = {
-	origin: "*",
-	credentials: true,
-	optionSuccessStatus: 200,
-};
-
-app.use(cors(corsOptions));
+app.use(
+	cors({
+		origin: "http://localhost:3001",
+		credentials: true,
+	})
+);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

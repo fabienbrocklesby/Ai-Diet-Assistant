@@ -24,7 +24,7 @@ const LoginPage = () => {
 		e.preventDefault();
 
 		try {
-			const response = await fetch("http://localhost:3000/login", {
+			const response = await fetch("http://localhost:3000/auth/login", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
@@ -34,6 +34,7 @@ const LoginPage = () => {
 					username,
 					password,
 				}),
+				credentials: "include",
 			});
 
 			const data = await response.json();
