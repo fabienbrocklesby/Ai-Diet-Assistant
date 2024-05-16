@@ -48,6 +48,8 @@ export default {
 			otp_expires: new Date(Date.now() + 1000 * 60 * 60),
 		});
 
+		console.log(result);
+
 		return result;
 	},
 
